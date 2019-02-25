@@ -4,6 +4,7 @@ import SpaceNavigator from './components/spaceNavigator';
 import Viewer from './components/viewer';
 
 import * as api from './lib/api';
+import moment from 'moment';
 
 class App extends Component {
 
@@ -58,6 +59,21 @@ class App extends Component {
     });
   }
 
+  handlePrev = () => {
+    const { date } = this.state;
+    const prevDate = moment(date).subtract(1, 'days').format('YYYY-MM-DD');
+    console.log(prevDate);
+    this.getAPOD(prevDate);
+  }
+
+  handleNext = () => {
+    const { date, maxDate } = this.state;
+    if(date === maxDate) return;
+
+    const nextDate = moment(date).add(1, 'days').format('YYYY-MM-DD');
+    this.getAPOD(nextDate);
+  }
+
   componentDidMount() {
     this.getAPOD();
   }
@@ -66,10 +82,11 @@ class App extends Component {
 
     //  const 변수
     const { url, mediaType, loading } = this.state;
+    const { handlePrev, handleNext } = this;
 
     return (
       <ViewerTemplate  
-        spaceNavigator={<SpaceNavigator/>}
+        spaceNavigator={(<SpaceNavigator onPrev={handlePrev} onNext={handleNext}/>)}
         /*
         viewer={(<Viewer
           url="https://apod.nasa.gov/apod/image/1712/GeminidsYinHao1024.jpg"
